@@ -14,19 +14,19 @@ def quit(ctx):
     print("Copyright © 2024 Charudatta")
 
 @task
-def run_backup(ctx):
-    script_path = Path("Generate-SystemReports.ps1")
-    if script_path.is_file():
-        ctx.run(f"pwsh.exe -NoLogo -Command .\\{script_path.name}")
-        ctx.run("pwsh.exe -NoLogo -Command Generate-SystemReports")
-    else:
-        print(f"Script {script_path} not found")
+def test(ctx):
+    ctx.run("python -m unittest discover -s tests")
 
 @task
-def list_pipx_installed_packages(ctx):
-    update_progress(ctx, "Listing Pipx installed packages...")
-    with open("pipx_list.txt", "w") as file:
-        ctx.run("pipx list", out_stream=file)
+def train(ctx):
+    with ctx.prefix('conda activate w'):
+        ctx.run("python src/main.py")
+
+@task
+def run(ctx):
+    ctx.run("ollama run gemma:2b &", pty=True)
+    with ctx.prefix('conda activate w'):
+        ctx.run("python src/ai_write_blog_post_v4.py")
 
 @task
 def list_scoop_installed_apps(ctx):
